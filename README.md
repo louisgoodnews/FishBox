@@ -40,13 +40,13 @@ FishBox/
 1. **Clone the repository** to your local machine:
 
 ```fish
-git clone <your-git-repo-url> ~/Projects/FishBox
+git clone https://github.com/louisgoodnews/FishBox.git
 ```
 
 2. **Source the loader** in your Fish configuration (`~/.config/fish/config.fish`):
 
 ```fish
-source ~/Projects/FishBox/conf.d/FishBox.fish
+source ~/.config/fish/config.fish
 ```
 
 3. **Use your custom functions and scripts** immediately:
@@ -57,6 +57,14 @@ hello
 ```
 
 4. **Add new scripts or functions** to the respective directories to extend FishBox.
+
+5. **Source the local loader** to use your custom functions and scripts immediately:
+
+```fish
+source conf.d/FishBox.fish
+```
+
+6. **Commit and push changes** to sync across devices.
 
 ---
 
