@@ -1,0 +1,4 @@
+# Ignore temporary and system files
+.DS_Store
+*.swp
+thumbs.db
