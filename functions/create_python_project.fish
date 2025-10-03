@@ -80,6 +80,7 @@ function create_python_project
     mkdir -p $proj_dir/examples
     mkdir -p $proj_dir/tests
     mkdir -p $proj_dir/thirdparty
+    mkdir -p $proj_dir/src/$inner_project_name/common
     mkdir -p $proj_dir/src/$inner_project_name/core
     mkdir -p $proj_dir/src/$inner_project_name/utils
     mkdir -p $proj_dir/.github/workflows
@@ -91,6 +92,7 @@ function create_python_project
     touch $proj_dir/examples/__init__.py
     touch $proj_dir/src/__init__.py
     touch $proj_dir/src/$inner_project_name/__init__.py
+    touch $proj_dir/src/$inner_project_name/common/__init__.py
     touch $proj_dir/src/$inner_project_name/core/__init__.py
     touch $proj_dir/src/$inner_project_name/utils/__init__.py
     echo "done"
@@ -125,7 +127,10 @@ function create_python_project
 
     # Create the core and utils scripts
     echo "Creating core and utils scripts ..."
+    touch $proj_dir/src/$inner_project_name/common/constants.py
+    touch $proj_dir/src/$inner_project_name/core/constants.py
     touch $proj_dir/src/$inner_project_name/core/core.py
+    touch $proj_dir/src/$inner_project_name/utils/constants.py
     touch $proj_dir/src/$inner_project_name/utils/utils.py
     echo "done"
 
@@ -134,19 +139,24 @@ function create_python_project
     python3 -m venv $proj_dir/.venv
     echo "Python virtual environment created at $proj_dir/.venv"
     echo "To activate the venv, run:"
-    echo "  source $proj_dir/.venv/bin/activate"
+    echo "  source $proj_dir/.venv/bin/activate.fish"
 
     # Print a message indicating that the project structure has been created
     echo "Project structure created."
 
     # Activate the virtual environment
     echo "Activating virtual environment to update pip..."
-    source $proj_dir/.venv/bin/activate
+    source $proj_dir/.venv/bin/activate.fish
     echo "done"
 
     # Upgrade pip
     echo "Upgrading pip ..."
     pip install --upgrade pip
+    echo "done"
+
+    # Initialize git repository
+    echo "Initializing git repository ..."
+    git init
     echo "done"
 
     # Install dependencies
@@ -156,5 +166,5 @@ function create_python_project
 
     echo "DO NOT FORGET TO ACTIVATE THE VENV BEFORE USING IT!"
     echo "To activate the venv, run:"
-    echo "  source $proj_dir/.venv/bin/activate"
+    echo "  source $proj_dir/.venv/bin/activate.fish"
 end
