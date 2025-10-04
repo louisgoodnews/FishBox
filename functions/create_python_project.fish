@@ -134,6 +134,11 @@ function create_python_project
     touch $proj_dir/src/$inner_project_name/utils/utils.py
     echo "done"
 
+    # Enter project directory
+    echo "Entering project directory ..."
+    cd $proj_dir
+    echo "done"
+
     # Create the virtual environment
     echo "Creating virtual environment ..."
     python3 -m venv $proj_dir/.venv
@@ -156,7 +161,6 @@ function create_python_project
 
     # Initialize git repository
     echo "Initializing git repository ..."
-    cd $proj_dir
     git init
     echo "done"
 
