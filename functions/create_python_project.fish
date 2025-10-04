@@ -156,6 +156,7 @@ function create_python_project
 
     # Initialize git repository
     echo "Initializing git repository ..."
+    cd $proj_dir
     git init
     echo "done"
 
