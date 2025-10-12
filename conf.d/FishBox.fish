@@ -1,3 +1,5 @@
+#!/usr/bin/env fish
+
 # Auto-load functions and completions for FishBox
 for f in /home/louisgoodnews/Coding/fish/FishBox/functions/*.fish
     source $f

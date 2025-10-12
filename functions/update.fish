@@ -124,15 +124,18 @@ function update
                 set failed_managers $failed_managers pacman
             end
 
-            # Parallelize AUR/Flatpak updates. Each background job appends its
-            # name to `failed_managers` if it fails. `wait` ensures all jobs
-            # complete before proceeding.
-            begin
-                try_update yay "yay -Syu" & or set failed_managers $failed_managers yay &
-                try_update paru "paru -Syu" & or set failed_managers $failed_managers paru &
-                try_update flatpak "flatpak update -y" & or set failed_managers $failed_managers flatpak &
-                wait
+            # Parallelize AUR/Flatpak updates. Background jobs cannot modify
+            # parent variables reliably, so collect failures in a temp file.
+            set -l tmp_fail (mktemp)
+            # Each job writes its name to tmp_fail if it fails
+            begin; try_update yay "yay -Syu"; or echo yay >> $tmp_fail; end &
+            begin; try_update paru "paru -Syu"; or echo paru >> $tmp_fail; end &
+            begin; try_update flatpak "flatpak update -y"; or echo flatpak >> $tmp_fail; end &
+            wait
+            if test -s $tmp_fail
+                set failed_managers $failed_managers (cat $tmp_fail)
             end
+            rm -f $tmp_fail
         case "pacman"
             if not try_update pacman "sudo pacman -Syu"
                 set failed_managers $failed_managers pacman
