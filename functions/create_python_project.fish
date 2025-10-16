@@ -43,6 +43,9 @@ function create_python_project
     # The name of the project (outer/top-level directory and package name)
     set -l outer_project_name
 
+    # The name of the inner project (package name under src/)
+    set -l inner_project_name
+
     # Feature toggles
     set -l do_git 1
     set -l do_venv 1
@@ -97,10 +100,10 @@ function create_python_project
     end
 
     # The project inner (import) name: override or lowercase of outer name
-    if set -q override_pkg_name
-        set inner_project_name $override_pkg_name
-    else
+    if test (string length $override_pkg_name) -eq 0
         set inner_project_name (string lower $outer_project_name)
+    else
+        set inner_project_name $override_pkg_name
     end
 
     # The absolute path to the target directory to avoid relative path issues
@@ -113,14 +116,16 @@ function create_python_project
 
     # Create the project directory structure
     echo "Creating directories ..."
-    mkdir -p $proj_dir/docs
-    mkdir -p $proj_dir/examples
-    mkdir -p $proj_dir/tests
-    mkdir -p $proj_dir/thirdparty
-    mkdir -p $proj_dir/src/$inner_project_name/common
-    mkdir -p $proj_dir/src/$inner_project_name/core
-    mkdir -p $proj_dir/src/$inner_project_name/utils
-    mkdir -p $proj_dir/.github/workflows
+    mkdir -p -v $proj_dir/docs
+    mkdir -p -v $proj_dir/examples
+    mkdir -p -v $proj_dir/tests
+    mkdir -p -v $proj_dir/thirdparty
+    mkdir -p -v $proj_dir/src
+    mkdir -p -v $proj_dir/src/$inner_project_name
+    mkdir -p -v $proj_dir/src/$inner_project_name/common
+    mkdir -p -v $proj_dir/src/$inner_project_name/core
+    mkdir -p -v $proj_dir/src/$inner_project_name/utils
+    mkdir -p -v $proj_dir/.github/workflows
     echo "done"
 
     # Create the __init__.py files to make packages importable
