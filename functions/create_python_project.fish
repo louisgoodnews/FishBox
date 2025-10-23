@@ -1,3 +1,5 @@
+#!/usr/bin/env fish
+
 function create_python_project
     # -------------------------------------------------------------------------
     # create_python_project (fish shell function)
@@ -50,7 +52,7 @@ function create_python_project
     set -l do_git 1
     set -l do_venv 1
     set -l do_install 1
-    set -l override_pkg_name
+    set -l override_pkg_name ""
 
     # Parse flags then positional args
     set -l argv_filtered
@@ -100,14 +102,14 @@ function create_python_project
     end
 
     # The project inner (import) name: override or lowercase of outer name
-    if test (string length $override_pkg_name) -eq 0
+    if test -z "$override_pkg_name"
         set inner_project_name (string lower $outer_project_name)
     else
-        set inner_project_name $override_pkg_name
+        set inner_project_name (string lower $override_pkg_name)
     end
 
     # The absolute path to the target directory to avoid relative path issues
-    set -l abs_target_dir (realpath $target_dir)
+    set -l abs_target_dir (python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" $target_dir)
     # The absolute path to the project directory
     set -l proj_dir $abs_target_dir/$outer_project_name
 
@@ -116,27 +118,27 @@ function create_python_project
 
     # Create the project directory structure
     echo "Creating directories ..."
-    mkdir -p -v $proj_dir/docs
-    mkdir -p -v $proj_dir/examples
-    mkdir -p -v $proj_dir/tests
-    mkdir -p -v $proj_dir/thirdparty
-    mkdir -p -v $proj_dir/src
-    mkdir -p -v $proj_dir/src/$inner_project_name
-    mkdir -p -v $proj_dir/src/$inner_project_name/common
-    mkdir -p -v $proj_dir/src/$inner_project_name/core
-    mkdir -p -v $proj_dir/src/$inner_project_name/utils
-    mkdir -p -v $proj_dir/.github/workflows
+    mkdir -p -v "$proj_dir/docs"
+    mkdir -p -v "$proj_dir/examples"
+    mkdir -p -v "$proj_dir/tests"
+    mkdir -p -v "$proj_dir/thirdparty"
+    mkdir -p -v "$proj_dir/src"
+    mkdir -p -v "$proj_dir/src/$inner_project_name"
+    mkdir -p -v "$proj_dir/src/$inner_project_name/common"
+    mkdir -p -v "$proj_dir/src/$inner_project_name/core"
+    mkdir -p -v "$proj_dir/src/$inner_project_name/utils"
+    mkdir -p -v "$proj_dir/.github/workflows"
     echo "done"
 
     # Create the __init__.py files to make packages importable
     echo "Creating __init__.py files ..."
-    touch $proj_dir/tests/__init__.py
-    touch $proj_dir/examples/__init__.py
-    touch $proj_dir/src/__init__.py
-    touch $proj_dir/src/$inner_project_name/__init__.py
-    touch $proj_dir/src/$inner_project_name/common/__init__.py
-    touch $proj_dir/src/$inner_project_name/core/__init__.py
-    touch $proj_dir/src/$inner_project_name/utils/__init__.py
+    touch "$proj_dir/tests/__init__.py"
+    touch "$proj_dir/examples/__init__.py"
+    touch "$proj_dir/src/__init__.py"
+    touch "$proj_dir/src/$inner_project_name/__init__.py"
+    touch "$proj_dir/src/$inner_project_name/common/__init__.py"
+    touch "$proj_dir/src/$inner_project_name/core/__init__.py"
+    touch "$proj_dir/src/$inner_project_name/utils/__init__.py"
     echo "done"
 
     # Create and populate common project files
@@ -181,11 +183,11 @@ function create_python_project
     end > $proj_dir/.editorconfig
 
     # Optional placeholder files (user can fill or remove as needed)
-    touch $proj_dir/.pre-commit-config.yaml
-    touch $proj_dir/CHANGELOG.md
-    touch $proj_dir/CONTRIBUTING.md
-    touch $proj_dir/CODE_OF_CONDUCT.md
-    touch $proj_dir/ISSUE_TEMPLATE.md
+    touch "$proj_dir/.pre-commit-config.yaml"
+    touch "$proj_dir/CHANGELOG.md"
+    touch "$proj_dir/CONTRIBUTING.md"
+    touch "$proj_dir/CODE_OF_CONDUCT.md"
+    touch "$proj_dir/ISSUE_TEMPLATE.md"
 
     # README.md
     begin
@@ -201,7 +203,7 @@ function create_python_project
     printf "%s\n" "python -m venv .venv" "source .venv/bin/activate" "pip install -r requirements.txt" >> $proj_dir/README.md
 
     # requirements.txt (empty default)
-    touch $proj_dir/requirements.txt
+    touch "$proj_dir/requirements.txt"
 
     # setup.py
     begin
@@ -351,17 +353,17 @@ function create_python_project
 
     # Create the main and debug scripts as starting points
     echo "Creating main and debug scripts ..."
-    touch $proj_dir/src/$inner_project_name/main.py
-    touch $proj_dir/src/$inner_project_name/debug.py
+    touch "$proj_dir/src/$inner_project_name/main.py"
+    touch "$proj_dir/src/$inner_project_name/debug.py"
     echo "done"
 
     # Create the core and utils scripts scaffolding
     echo "Creating core and utils scripts ..."
-    touch $proj_dir/src/$inner_project_name/common/constants.py
-    touch $proj_dir/src/$inner_project_name/core/constants.py
-    touch $proj_dir/src/$inner_project_name/core/core.py
-    touch $proj_dir/src/$inner_project_name/utils/constants.py
-    touch $proj_dir/src/$inner_project_name/utils/utils.py
+    touch "$proj_dir/src/$inner_project_name/common/constants.py"
+    touch "$proj_dir/src/$inner_project_name/core/constants.py"
+    touch "$proj_dir/src/$inner_project_name/core/core.py"
+    touch "$proj_dir/src/$inner_project_name/utils/constants.py"
+    touch "$proj_dir/src/$inner_project_name/utils/utils.py"
     echo "done"
 
     # Enter project directory for subsequent operations
@@ -412,7 +414,7 @@ function create_python_project
         echo "Initializing git repository ..."
         git init
         git add .
-        git commit -m "Initial Python project setup" >/dev/null ^/dev/null
+        git commit -m "Initial Python project setup" &>/dev/null
         echo "done"
     else
         echo "Skipping git init (--no-git)."
